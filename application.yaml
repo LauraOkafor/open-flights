@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default 
   source:
-    repoURL: https://github.com/yourusername/your-repository.git  # Change to your repo
+    repoURL: https://github.com/LauraOkafor/open-flights.git 
     targetRevision: HEAD
     path: infra  # Path to your existing manifests
   destination:
