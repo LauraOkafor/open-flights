@@ -1,45 +1,49 @@
 source 'https://rubygems.org'
 
-git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
-  "https://github.com/#{repo_name}.git"
-end
-
-gem 'rails', '~> 6.0', '>= 6.0.3.4'
+# Core gems
+gem 'rails', '~> 6.1.7.6'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 5.6'
-gem 'webpacker', '~> 5.4', '>= 5.4.4'
+gem 'webpacker', '~> 5.4.4'
 
-gem 'brakeman'
-gem 'bcrypt'
-gem 'bundler-audit'
+# Match the nokogiri version from Gemfile.lock
+gem 'nokogiri', '~> 1.16.2'
+
+# Security
+gem 'brakeman', '~> 6.1.1'
+gem 'bcrypt', '~> 3.1.20'
+gem 'bundler-audit', '~> 0.9.1'
+
+# Asset processing
 gem 'coffee-rails', '~> 4.2'
-gem 'fast_jsonapi'
-gem 'figaro'
-gem 'turbolinks', '~> 5'
 gem 'sass-rails', '~> 5.0'
-gem 'sendgrid-ruby'
-gem 'sidekiq'
 gem 'uglifier', '>= 1.3.0'
+gem 'turbolinks', '~> 5'
+
+# API and Serialization
+gem 'fast_jsonapi'
 gem 'graphql'
 gem 'graphql-batch'
-gem 'graphiql-rails', group: :development
+
+# Development Tools
 gem 'pry'
+gem 'graphiql-rails'
 
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'rspec-rails'
   gem 'rspec_junit_formatter'
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug'
 end
 
 group :development do
-
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
-
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+# Additional gems from Gemfile.lock
+gem 'figaro'
+gem 'sendgrid-ruby'
+gem 'sidekiq'

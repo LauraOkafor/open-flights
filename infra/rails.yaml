@@ -1,0 +1,117 @@
+# ConfigMap for Rails app environment variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rails-config
+data:
+  RAILS_ENV: "development"
+  DATABASE_HOST: "db"
+  DATABASE_USERNAME: "open-flights"
+  DATABASE_PASSWORD: "password"
+  POSTGRES_DB: "open-flights_development"
+  POSTGRES_USER: "open-flights"
+  POSTGRES_PASSWORD: "password"
+  WEBPACKER_DEV_SERVER_HOST: "webpacker"
+---
+# Deployment for Rails App
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rails-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rails-app
+  template:
+    metadata:
+      labels:
+        app: rails-app
+    spec:
+      initContainers:
+      - name: init-db
+        image: postgres:13-alpine
+        command: ['sh', '-c', 
+          'until pg_isready -h db -p 5432; 
+          do echo "Waiting for database..."; 
+          sleep 2; 
+          done;']
+      containers:
+      - name: rails-app
+        image: lauraokafor/rubyproject:webpacker-setup
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          rm -f tmp/pids/server.pid
+          echo "Setting up database..."
+          bundle exec rake db:create db:migrate
+          echo "Starting Rails server..."
+          bundle exec rails server -p 3000 -b 0.0.0.0
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: rails-config
+        readinessProbe:
+          tcpSocket:
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 3
+---
+# Deployment for Webpacker Dev Server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webpacker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webpacker
+  template:
+    metadata:
+      labels:
+        app: webpacker
+    spec:
+      containers:
+      - name: webpacker
+        image: lauraokafor/rubyproject:webpacker-setup
+        command: ["./bin/webpack-dev-server"]
+        ports:
+        - containerPort: 3035
+        env:
+        - name: RAILS_ENV
+          value: "development"
+        - name: NODE_ENV
+          value: "development"
+        - name: WEBPACKER_DEV_SERVER_HOST
+          value: "0.0.0.0"
+---
+# NodePort Service for Rails App
+apiVersion: v1
+kind: Service
+metadata:
+  name: rails-app
+spec:
+  selector:
+    app: rails-app
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: 3000
+    nodePort: 32000
+---
+# NodePort Service for Webpacker Dev Server
+apiVersion: v1
+kind: Service
+metadata:
+  name: webpacker
+spec:
+  selector:
+    app: webpacker
+  type: NodePort
+  ports:
+  - port: 3035
+    targetPort: 3035
+    nodePort: 32001

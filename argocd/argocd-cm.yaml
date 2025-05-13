@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+  namespace: argocd
+data:
+  # Minimal required configuration
+  url: https://argocd.example.com  # Replace with your ArgoCD URL or just leave as is
