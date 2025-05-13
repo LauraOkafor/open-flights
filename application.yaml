@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/LauraOkafor/open-flights.git 
     targetRevision: HEAD
-    path: infra  # Path to your existing manifests
+    path: infra  
   destination:
     server: https://kubernetes.default.svc
     namespace: rails-app  # Change to your application namespace

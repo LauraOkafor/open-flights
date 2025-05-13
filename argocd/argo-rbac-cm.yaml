@@ -4,5 +4,4 @@ metadata:
   name: argocd-rbac-cm
   namespace: argocd
 data:
-  # Minimal required configuration
   policy.default: role:readonly
