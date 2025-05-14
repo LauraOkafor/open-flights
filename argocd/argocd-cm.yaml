@@ -4,4 +4,5 @@ metadata:
   name: argocd-cm
   namespace: argocd
 data:
-  url: https://argocd.example.com  # Replace with your ArgoCD URL or just leave as is
+  url: https://argocd.example.com  
+  application.instanceLabelKey: argocd.argoproj.io/instance

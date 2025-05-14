@@ -5,3 +5,11 @@ metadata:
   namespace: argocd
 data:
   policy.default: role:readonly
+
+  policy.csv: |
+    g, admin-user, role:admin
+    g, dev-user, role:dev
+
+    p, role:dev, applications, get, */*, allow
+    p, role:dev, applications, sync, */*, allow
+    p, role:dev, logs, get, */*, allow

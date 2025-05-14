@@ -11,7 +11,7 @@ spec:
     path: infra  
   destination:
     server: https://kubernetes.default.svc
-    namespace: rails-app  # Change to your application namespace
+    namespace: default  
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
